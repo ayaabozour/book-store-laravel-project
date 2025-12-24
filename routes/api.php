@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\BookController;
 use App\Http\Controllers\API\CategoryController;
+use App\Http\Controllers\API\OrderController;
 use App\Http\Controllers\API\PaymentMethodController;
 use Illuminate\Support\Facades\Route;
 
@@ -41,3 +42,10 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
 });
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('orders', [OrderController::class, 'index']);
+    Route::post('orders', [OrderController::class, 'store'])
+        ->middleware('role:customer');
+});
+

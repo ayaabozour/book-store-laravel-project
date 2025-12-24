@@ -5,25 +5,47 @@ namespace Database\Seeders;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
-    public function run(): void{
-        $roles = Role::all();
-
-       foreach(['admin','author','customer'] as $roleName){
-        $role = $roles->where('name',$roleName)->first();
+    public function run(): void
+    {
+        $adminRole    = Role::where('name', 'admin')->firstOrFail();
+        $authorRole   = Role::where('name', 'author')->firstOrFail();
+        $customerRole = Role::where('name', 'customer')->firstOrFail();
+        
+        User::create([
+            'name'     => 'Admin',
+            'email'    => 'admin@example.com',
+            'password' => Hash::make('password123'),
+            'role_id'  => $adminRole->id,
+        ]);
 
         User::create([
-            'name'=> ucfirst($roleName),
-            'email'=> $roleName.'@example.com',
-            'password'=>bcrypt('password123'),
-            'role_id'=>$role->id,
+            'name'     => 'Author',
+            'email'    => 'author@example.com',
+            'password' => Hash::make('password123'),
+            'role_id'  => $authorRole->id,
         ]);
-       }
 
+        User::create([
+            'name'     => 'Customer',
+            'email'    => 'customer@example.com',
+            'password' => Hash::make('password123'),
+            'role_id'  => $customerRole->id,
+        ]);
+
+        User::factory()
+            ->count(15)
+            ->create([
+                'role_id' => $authorRole->id,
+            ]);
+
+        User::factory()
+            ->count(10)
+            ->create([
+                'role_id' => $customerRole->id,
+            ]);
     }
 }
