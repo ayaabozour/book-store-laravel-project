@@ -49,3 +49,9 @@ Route::middleware('auth:sanctum')->group(function () {
         ->middleware('role:customer');
 });
 
+Route::middleware(['auth:sanctum', 'role:admin'])
+    ->prefix('admin/users')
+    ->group(function () {
+        Route::get('/authors', [\App\Http\Controllers\Admin\UserController::class, 'authors']);
+        Route::get('/customers', [\App\Http\Controllers\Admin\UserController::class, 'customers']);
+    });
